@@ -41,18 +41,6 @@ public class ConversionCalculator implements ActionListener, Runnable
         button.setMnemonic(KeyEvent.VK_D);
         button.addActionListener(this);
         
-        //Units of conversion
-        units = new String[9];
-        units[0] = "Kilometer";
-        units[1] = "Meter";
-        units[2] = "Centimeter";
-        units[3] = "Millimeter";
-        units[4] = "Mile";
-        units[5] = "Yard";
-        units[6] = "Foot";
-        units[7] = "Inch";
-        units[8] = "Light Year";
-        
         //ComboBox for units
         unitsList = new JComboBox(units);
         unitsList2 = new JComboBox(units);
@@ -109,9 +97,15 @@ public class ConversionCalculator implements ActionListener, Runnable
         }
     }
     
-    public void conversion(String first, String second) {
-        double[] values = {1.0, 1000.0, 10000.0, 100000.0, .621371, 1093.61, 3280.84, 
+    public void conversion(int index, int index2) {
+        double[] values = {10000.0 , 100.0, 1.0, //, .621371, 1093.61, 3280.84, 
             39370.1, 1.057};
+        String[] units = {"Kilometer", "Meter", "Centimeter", "Millimeter", "Mile", "Yard", "Foot", "Inch", 
+            "Light Year"};
+            
+            values[index]
+        
+        
     }
     
     public static void start() {
