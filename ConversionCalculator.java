@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.util.*;
+import javax.swing.JTextField;
+
 /**
  * Write a description of class GUIProject here.
  *
@@ -41,13 +42,15 @@ public class ConversionCalculator implements ActionListener, Runnable
         button.setMnemonic(KeyEvent.VK_D);
         button.addActionListener(this);
         
+        //Units/String array
+        String[] units = {"Kilometer", "Meter", "Centimeter", "Millimeter", "Mile", "Yard", "Foot", "Inch", 
+        "Light Year"};
+        
         //ComboBox for units
         unitsList = new JComboBox(units);
         unitsList2 = new JComboBox(units);
         int index = unitsList.getSelectedIndex();
-        
-        
-
+    
         //Fonts
         Font font1 = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
         
@@ -61,6 +64,7 @@ public class ConversionCalculator implements ActionListener, Runnable
         label2 = new JLabel("To:");
         label2.setFont(font1);
         label2.setVerticalAlignment(JLabel.TOP);
+        To.setEditable(false);
         
         
         //Locations and Sizes
@@ -93,19 +97,19 @@ public class ConversionCalculator implements ActionListener, Runnable
     public void actionPerformed(ActionEvent event)
     {
         if (event.getSource() == button) {
-            
+                double conversion = conversion(From.getText(),
+                unitsList.getSelectedIndex(), unitsList2.getSelectedIndex());
+                To.setText(conversion + ""); 
         }
     }
     
-    public void conversion(int index, int index2) {
-        double[] values = {10000.0 , 100.0, 1.0, //, .621371, 1093.61, 3280.84, 
-            39370.1, 1.057};
-        String[] units = {"Kilometer", "Meter", "Centimeter", "Millimeter", "Mile", "Yard", "Foot", "Inch", 
-            "Light Year"};
-            
-            values[index]
+    public double conversion(String stringValue, int index, int index2) {
+        double value = Double.parseDouble(stringValue);
+        double[] values = {1000, 1, 0.01, 0.001, 1609.34, 0.9144, 0.3048, 0.0254, 
+        9.461*Math.pow(10,15)};
         
-        
+        double toMeters = value * values[index];
+        return Math.round(toMeters/values[index2])/100.0;
     }
     
     public static void start() {
