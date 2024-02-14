@@ -109,7 +109,7 @@ public class ConversionCalculator implements ActionListener, Runnable
         9.461*Math.pow(10,15)};
         
         double toMeters = value * values[index];
-        return Math.round(toMeters/values[index2])/100.0;
+        return Math.round(toMeters/values[index2] * 100)/100.0;
     }
     
     public static void start() {

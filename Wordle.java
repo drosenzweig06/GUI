@@ -68,14 +68,13 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         //Create array of words
         ArrayList<String> potentialWords = new ArrayList<String>();
         try {
-            File words = new File(wordle-guess-words.txt);
+            File words = new File("wordle-guess-words.txt");
             Scanner scan = new Scanner(words);
             while(scan.hasNextLine()) {
                 String word = scan.nextLine();
                 potentialWords.add(word);
             }
             scan.close();
-            String[] potentialWords2 = potentialWords.toArray(String[]::new);
         } catch(FileNotFoundException e) {
             System.out.println("Error");
         }
@@ -106,17 +105,16 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         
     }
     
-    public static String getAnswer() {
+    public static void getAnswer() {
         ArrayList<String> potentialWords = new ArrayList<String>();
         try {
-            File words = new File(wordle-game-words.txt);
+            File words = new File("wordle-game-words.txt");
             Scanner scan = new Scanner(words);
             while(scan.hasNextLine()) {
                 String word = scan.nextLine();
                 potentialWords.add(word);
             }
-            scan.close();
-            String[] potentialWords2 = potentialWords.toArray(String[]::new);
+            scan.close();+-
         } catch(FileNotFoundException e) {
             System.out.println("Error");
         }
