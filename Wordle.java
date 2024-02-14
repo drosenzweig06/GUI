@@ -2,6 +2,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.util.Scanner;
+import java.io.File;
+
 /**
  * Write a description of class Wordel here.
  *
@@ -26,6 +31,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             countX--;
             box[countX][countY].setText("");
         } else if (e.getKeyCode() == e.VK_ENTER && countX == 5) {
+            checkWord();
             countX = 0;
             countY++;
         }
@@ -59,7 +65,20 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         main = new JPanel(new BorderLayout(20, 20));
         frame.setContentPane(main);
         
-        
+        //Create array of words
+        ArrayList<String> potentialWords = new ArrayList<String>();
+        try {
+            File words = new File(wordle-guess-words.txt);
+            Scanner scan = new Scanner(words);
+            while(scan.hasNextLine()) {
+                String word = scan.nextLine();
+                potentialWords.add(word);
+            }
+            scan.close();
+            String[] potentialWords2 = potentialWords.toArray(String[]::new);
+        } catch(FileNotFoundException e) {
+            System.out.println("Error");
+        }
         // Create content panel without a layout manager
         main = new JPanel();
         main.setLayout(null);
@@ -85,6 +104,22 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     
     public void checkWord() {
         
+    }
+    
+    public static String getAnswer() {
+        ArrayList<String> potentialWords = new ArrayList<String>();
+        try {
+            File words = new File(wordle-game-words.txt);
+            Scanner scan = new Scanner(words);
+            while(scan.hasNextLine()) {
+                String word = scan.nextLine();
+                potentialWords.add(word);
+            }
+            scan.close();
+            String[] potentialWords2 = potentialWords.toArray(String[]::new);
+        } catch(FileNotFoundException e) {
+            System.out.println("Error");
+        }
     }
     
     public static void start() {
