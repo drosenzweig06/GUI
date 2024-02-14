@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.util.Scanner;
 import java.io.File;
+import java.util.Random;
 
 /**
  * Write a description of class Wordel here.
@@ -21,6 +22,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     JTextField[][] box = new JTextField[7][6];
     int countX = 0;
     int countY = 0;
+    private MyHashTable potentialWords = new MyHashTable();
+    private ArrayList<String> words = new ArrayList<String>();
     
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
@@ -31,7 +34,10 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             countX--;
             box[countX][countY].setText("");
         } else if (e.getKeyCode() == e.VK_ENTER && countX == 5) {
-            checkWord();
+            // if(checkValidWord() == true) {
+                // countX = 0;
+                // countY++; d
+            // }
             countX = 0;
             countY++;
         }
@@ -52,6 +58,21 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         }
     }
     
+    public void checkCharacters() {
+        
+    }
+    
+    public void checkValidWord() {
+        String word = "";
+        for(int i = 0; i < words.size() - 1; i++) {
+            potentialWords.put(potentialWords.get(i),i);
+        }
+        
+        for(int j = 0; j < 5; j++) {
+            word += box[j][countY].getText();
+        }
+    }
+    
     /**
      * Constructor for objects of class Worlde
      */
@@ -65,19 +86,19 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         main = new JPanel(new BorderLayout(20, 20));
         frame.setContentPane(main);
         
-        //Create array of words
-        ArrayList<String> potentialWords = new ArrayList<String>();
+        //Create arraylist
         try {
-            File words = new File("wordle-guess-words.txt");
-            Scanner scan = new Scanner(words);
+            File file = new File("wordle-guess-words.txt");
+            Scanner scan = new Scanner(file);
             while(scan.hasNextLine()) {
                 String word = scan.nextLine();
-                potentialWords.add(word);
+                words.add(word);
             }
             scan.close();
         } catch(FileNotFoundException e) {
             System.out.println("Error");
         }
+        
         // Create content panel without a layout manager
         main = new JPanel();
         main.setLayout(null);
@@ -100,13 +121,10 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     {
         
     }
-    
-    public void checkWord() {
-        
-    }
-    
-    public static void getAnswer() {
+
+    public static String pickAnswer() {
         ArrayList<String> potentialWords = new ArrayList<String>();
+        Random rand = new Random();
         try {
             File words = new File("wordle-game-words.txt");
             Scanner scan = new Scanner(words);
@@ -114,10 +132,14 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 String word = scan.nextLine();
                 potentialWords.add(word);
             }
-            scan.close();+-
+            scan.close();
         } catch(FileNotFoundException e) {
             System.out.println("Error");
         }
+        int i = rand.nextInt(potentialWords.size());
+        String answer = potentialWords.get(i);
+        System.out.println(answer);
+        return answer;
     }
     
     public static void start() {
