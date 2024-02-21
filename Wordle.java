@@ -23,7 +23,6 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     int countX = 0;
     int countY = 0;
     private MyHashTable potentialWords = new MyHashTable();
-    private ArrayList<String> words = new ArrayList<String>();
     static char[] input = new char[5];
     static char[] answer = new char[5];
     static String answer1;
@@ -37,11 +36,9 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             countY--;
             box[countY][countX].setText("");
         } else if (e.getKeyCode() == e.VK_ENTER && countY == 5) {
-            // if(checkValidWord() == true) {
-                // countX = 0;
-                // countY++; d
-            // }
             enteredWord();
+            checkValidWord();
+            colorThatBadBoy(checkCharacters(input, answer));
             countX++;
             countY = 0;
         }
@@ -53,6 +50,18 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     
     public void keyTyped(KeyEvent e) {
 
+    }
+    
+    public void colorThatBadBoy(int[] colors) {
+        for(int i = 0; i < 5; i++) {
+            if(colors[i] == 1) {
+                box[i][countX].setBackground(Color.yellow);
+            } else if(colors[i] == 2) {
+                box[i][countX].setBackground(Color.green);
+            } else if(colors[i] == 0) {
+                box[i][countX].setBackground(Color.gray);
+            }
+        }
     }
     
     public void enteredWord() {
@@ -88,14 +97,15 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         return colors;
     }
     
-    public void checkValidWord() {
-        String word = "";
-        for(int i = 0; i < words.size() - 1; i++) {
-            potentialWords.put(potentialWords.get(i),i);
+    public boolean checkValidWord() {
+        String inputWord = "";
+        for(int i = 0; i < 5; i++) {
+            inputWord += box[i][countX].getText();
         }
-        
-        for(int j = 0; j < 5; j++) {
-            word += box[j][countY].getText();
+        if(potentialWords.get(inputWord) != null) {
+            return true;
+        } else {
+            return false;
         }
     }
     
@@ -118,7 +128,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             Scanner scan = new Scanner(file);
             while(scan.hasNextLine()) {
                 String word = scan.nextLine();
-                words.add(word);
+                potentialWords.put(word,word);
             }
             scan.close();
         } catch(FileNotFoundException e) {
