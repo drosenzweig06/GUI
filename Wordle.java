@@ -43,6 +43,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             // }
             countX = 0;
             countY++;
+            enteredWord();
         }
     }
     
@@ -56,7 +57,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     
     public char[] enteredWord() {
         for(int i = 0; i < 5; i++) {
-            input[i] = box[i][countX].getText().charAt(1);
+            input[i] = box[i][countX].getText().charAt(0);
         }
         System.out.println(input);
         return input;
@@ -83,8 +84,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 }
             }
         }
-        System.out.println(input);
-        System.out.println(answer);
+        //System.out.println(input);
+        //System.out.println(answer);
         return colors;
     }
     
