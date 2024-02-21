@@ -24,8 +24,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     int countY = 0;
     private MyHashTable potentialWords = new MyHashTable();
     private ArrayList<String> words = new ArrayList<String>();
-    static char[] input;
-    static char[] answer;
+    static char[] input = new char[5];
+    static char[] answer = new char[5];
     static String answer1;
     
     public void keyPressed(KeyEvent e) {
@@ -41,11 +41,11 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 // countX = 0;
                 // countY++; d
             // }
-            countX = 0;
-            countY++;
             enteredWord();
+            countX++;
+            countY = 0;
         }
-    }
+    }                                               
     
     public void keyReleased(KeyEvent e) {
         
@@ -55,16 +55,14 @@ public class Wordle implements ActionListener, Runnable, KeyListener
 
     }
     
-    public char[] enteredWord() {
+    public void enteredWord() {
         for(int i = 0; i < 5; i++) {
             input[i] = box[i][countX].getText().charAt(0);
         }
-        System.out.println(input);
-        return input;
     }
     
     public void placeCharacter(char k) {
-        if(countY < 5) {
+        if (countY < 5) {
             box[countY][countX].setText(k + "");
             countY++;
         }
@@ -72,20 +70,21 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     
     public static int[] checkCharacters(char[] input, char[] answer) {
         int[] colors = new int[5];
+        char[] tempAnswer = answer;
         for(int i = 0; i < 5; i++) {
-            if(input[i] == answer[i]) {
+            if (input[i] == tempAnswer[i]) {
                 colors[i] = 2;
+                tempAnswer[i] = '.';
             }
         }
         for(int j = 0; j < 5; j++) {
             for(int k = 0; k < 5; k++) {
-                if(input[j] == answer[k] && colors[j] != 2) {
+                if (input[j] == tempAnswer[k] && colors[j] != 2) {
                     colors[j] = 1;
-                }
+                    tempAnswer[k] = '.';
+                } 
             }
         }
-        //System.out.println(input);
-        //System.out.println(answer);
         return colors;
     }
     
@@ -131,7 +130,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         main.setLayout(null);
         frame.setContentPane(main);
         for(int i = 0; i < 5; i++) {
-            for (int j = 0; j < 6; j++) {
+            for(int j = 0; j < 6; j++) {
                 box[i][j] = new JTextField();
                 box[i][j].setHorizontalAlignment(JTextField.CENTER);
                 box[i][j].setEditable(false);
@@ -141,6 +140,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 main.add(box[i][j]);
             }
         }
+        pickAnswer();
         frame.addKeyListener(this);
         frame.setVisible(true);
     }
