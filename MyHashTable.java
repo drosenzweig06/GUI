@@ -53,10 +53,11 @@ public class MyHashTable<K,V>
     public V get(K key)
     {
         int index = hash(key);
-        if (array[index] == null) {
+        HashNode<K,V> foundNode = searchBucket(index, key);
+        if (foundNode == null) {
             return null;
         } else {
-            return searchBucket(index, key).getValue();
+            return foundNode.getValue();
         }
     }
     

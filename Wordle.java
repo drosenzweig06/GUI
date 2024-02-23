@@ -20,6 +20,7 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     JFrame frame;
     JPanel main;
     JTextField[][] box = new JTextField[7][6];
+    JTextField wordleLogo;
     int countX = 0;
     int countY = 0;
     private MyHashTable potentialWords = new MyHashTable();
@@ -35,9 +36,9 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                     countY <= 5 && countY >= 1) {
             countY--;
             box[countY][countX].setText("");
-        } else if (e.getKeyCode() == e.VK_ENTER && countY == 5) {
+        } else if (e.getKeyCode() == e.VK_ENTER && countY == 5 
+        && isValidWord()) {
             enteredWord();
-            checkValidWord();
             colorThatBadBoy(checkCharacters(input, answer));
             countX++;
             countY = 0;
@@ -77,35 +78,38 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         }
     }
     
-    public static int[] checkCharacters(char[] input, char[] answer) {
+    public int[] checkCharacters(char[] input, char[] answer) {
         int[] colors = new int[5];
-        char[] tempAnswer = answer;
-        for(int i = 0; i < 5; i++) {
-            if (input[i] == tempAnswer[i]) {
-                colors[i] = 2;
-                tempAnswer[i] = '.';
+        char[] tempAnswer = Arrays.copyOf(answer, 5);
+        for(int j = 0; j < 5; j++) {
+            if (input[j] == tempAnswer[j]) {
+                colors[j] = 2;
+                tempAnswer[j] = '.';
             }
         }
-        for(int j = 0; j < 5; j++) {
-            for(int k = 0; k < 5; k++) {
-                if (input[j] == tempAnswer[k] && colors[j] != 2) {
-                    colors[j] = 1;
-                    tempAnswer[k] = '.';
+        for(int k = 0; k < 5; k++) {
+            for(int l = 0; l < 5; l++) {
+                if (input[k] == tempAnswer[l] && colors[k] != 2) {
+                    colors[k] = 1;
+                    tempAnswer[l] = '.';
                 } 
             }
         }
+        System.out.println(Arrays.toString(colors));
         return colors;
     }
     
-    public boolean checkValidWord() {
+    public boolean isValidWord() {
         String inputWord = "";
         for(int i = 0; i < 5; i++) {
             inputWord += box[i][countX].getText();
         }
         if(potentialWords.get(inputWord) != null) {
             return true;
-        } else {
+        } else if(potentialWords.get(inputWord) == null) {
             return false;
+        } else {
+            return true;
         }
     }
     
@@ -117,7 +121,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         frame = new JFrame();
         frame.setSize(600,800);
         frame.setLocation(100,100);
-        frame.setTitle("Window Title");
+        frame.setTitle("Wordle");
+        frame.setBackground(Color.white);
         frame.setResizable(false);
         main = new JPanel(new BorderLayout(20, 20));
         frame.setContentPane(main);
@@ -136,16 +141,31 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         }
         
         // Create content panel without a layout manager
+        Font font = new Font("SansSerif", Font.BOLD, 30);
+        Font font2 = new Font("SansSerif", Font.BOLD, 15);
         main = new JPanel();
         main.setLayout(null);
+        main.setBackground(Color.white);
+        wordleLogo = new JTextField();
+        wordleLogo.setSize(150, 50);
+        wordleLogo.setLocation(210,15);
+        wordleLogo.setHorizontalAlignment(JTextField.CENTER);
+        wordleLogo.setText("Wordle");
+        wordleLogo.setFont(font);
+        wordleLogo.setBackground(Color.white);
+        wordleLogo.setEditable(false);
+        wordleLogo.addKeyListener(this);
+        main.add(wordleLogo);
         frame.setContentPane(main);
         for(int i = 0; i < 5; i++) {
             for(int j = 0; j < 6; j++) {
                 box[i][j] = new JTextField();
                 box[i][j].setHorizontalAlignment(JTextField.CENTER);
                 box[i][j].setEditable(false);
-                box[i][j].setSize(40,40);
-                box[i][j].setLocation(50 + (i*50) ,50 + (j*50));
+                box[i][j].setSize(50,50);
+                box[i][j].setLocation(120 + (i*70) ,80 + (j*70));
+                box[i][j].setBackground(Color.white);
+                box[i][j].setFont(font2);
                 box[i][j].addKeyListener(this);
                 main.add(box[i][j]);
             }
