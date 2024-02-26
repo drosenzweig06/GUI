@@ -21,8 +21,10 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     JPanel main;
     JTextField[][] box = new JTextField[7][6];
     JTextField wordleLogo;
+    JTextField reveal;
     int countX = 0;
     int countY = 0;
+    boolean win = false;
     private MyHashTable potentialWords = new MyHashTable();
     static char[] input = new char[5];
     static char[] answer = new char[5];
@@ -39,9 +41,17 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         } else if (e.getKeyCode() == e.VK_ENTER && countY == 5 
         && isValidWord()) {
             enteredWord();
-            colorThatBadBoy(checkCharacters(input, answer));
-            countX++;
-            countY = 0;
+            String str = new String(input);
+            if(str.equals(answer1)) {
+                colorThatBadBoy(checkCharacters(input, answer));
+                win();
+                countY = 0;
+            } else {
+                colorThatBadBoy(checkCharacters(input, answer));
+                lose();
+                countX++;
+                countY = 0;
+            }
         }
     }                                               
     
@@ -51,6 +61,35 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     
     public void keyTyped(KeyEvent e) {
 
+    }
+    
+    public void win() {
+        Font font3 = new Font("SansSerif", Font.BOLD, 20);
+        reveal = new JTextField();
+        reveal.setSize(500, 50);
+        reveal.setLocation(50, 600);
+        reveal.setHorizontalAlignment(JTextField.CENTER);
+        reveal.setText("Congratulations bud. The answer was " + answer1);
+        reveal.setFont(font3);
+        reveal.setBackground(Color.white);
+        reveal.setEditable(false);
+        main.add(reveal);
+        win = true;
+    }
+    
+    public void lose() {
+        if(countX == 5 && isValidWord()) {
+                Font font3 = new Font("SansSerif", Font.BOLD, 20);
+                reveal = new JTextField();
+                reveal.setSize(500, 50);
+                reveal.setLocation(50, 600);
+                reveal.setHorizontalAlignment(JTextField.CENTER);
+                reveal.setText("Good try the answer was " + answer1);
+                reveal.setFont(font3);
+                reveal.setBackground(Color.white);
+                reveal.setEditable(false);
+                main.add(reveal);
+        }
     }
     
     public void colorThatBadBoy(int[] colors) {
@@ -95,7 +134,6 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 } 
             }
         }
-        System.out.println(Arrays.toString(colors));
         return colors;
     }
     
