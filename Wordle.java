@@ -9,17 +9,18 @@ import java.io.File;
 import java.util.Random;
 
 /**
- * Write a description of class Wordel here.
+ * Wordle game class
  *
- * @author (your name)
- * @version (a version number or a date)
+ * Daniel Rosenzweig
+ * 2/26/24
  */
-public class Wordle implements ActionListener, Runnable, KeyListener
+public class Wordle implements Runnable, KeyListener
 {
-    // instance variables - replace the example below with your own
+    // instance variables
     JFrame frame;
     JPanel main;
     JTextField[][] box = new JTextField[7][6];
+    JTextField[][] keyboard = new JTextField[2][13];
     JTextField wordleLogo;
     JTextField reveal;
     int countX = 0;
@@ -29,13 +30,13 @@ public class Wordle implements ActionListener, Runnable, KeyListener
     static char[] input = new char[5];
     static char[] answer = new char[5];
     static String answer1;
-    
+
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
         if (key != e.CHAR_UNDEFINED && Character.isLetter(key)) {
             placeCharacter(key);
         } else if (e.getKeyCode() == e.VK_BACK_SPACE &&
-                    countY <= 5 && countY >= 1) {
+        countY <= 5 && countY >= 1) {
             countY--;
             box[countY][countX].setText("");
         } else if (e.getKeyCode() == e.VK_ENTER && countY == 5 
@@ -54,15 +55,16 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             }
         }
     }                                               
-    
+
     public void keyReleased(KeyEvent e) {
-        
+
     }
-    
+
     public void keyTyped(KeyEvent e) {
 
     }
-    
+
+    //Displays text congratulating the user for winning the game and ends it
     public void win() {
         Font font3 = new Font("SansSerif", Font.BOLD, 20);
         reveal = new JTextField();
@@ -76,22 +78,24 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         main.add(reveal);
         win = true;
     }
-    
+
+    //Displays text informing the user that they lost the game
     public void lose() {
         if(countX == 5 && isValidWord()) {
-                Font font3 = new Font("SansSerif", Font.BOLD, 20);
-                reveal = new JTextField();
-                reveal.setSize(500, 50);
-                reveal.setLocation(50, 600);
-                reveal.setHorizontalAlignment(JTextField.CENTER);
-                reveal.setText("Good try the answer was " + answer1);
-                reveal.setFont(font3);
-                reveal.setBackground(Color.white);
-                reveal.setEditable(false);
-                main.add(reveal);
+            Font font3 = new Font("SansSerif", Font.BOLD, 20);
+            reveal = new JTextField();
+            reveal.setSize(500, 50);
+            reveal.setLocation(50, 600);
+            reveal.setHorizontalAlignment(JTextField.CENTER);
+            reveal.setText("Good try. The answer was " + answer1);
+            reveal.setFont(font3);
+            reveal.setBackground(Color.white);
+            reveal.setEditable(false);
+            main.add(reveal);
         }
     }
-    
+
+    //Uses a passed in integer array to determine what to highlight each textbox
     public void colorThatBadBoy(int[] colors) {
         for(int i = 0; i < 5; i++) {
             if(colors[i] == 1) {
@@ -99,24 +103,32 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             } else if(colors[i] == 2) {
                 box[i][countX].setBackground(Color.green);
             } else if(colors[i] == 0) {
-                box[i][countX].setBackground(Color.gray);
+                box[i][countX].setBackground(Color.lightGray);
             }
         }
     }
     
+    public void colorThatBadBoypt2(int[] colors) {
+        
+    }
+
+    //Processes and places the entered word into an array of chars
     public void enteredWord() {
         for(int i = 0; i < 5; i++) {
             input[i] = box[i][countX].getText().charAt(0);
         }
     }
-    
+
+    //Sets the text of the textbox to the character pressed
     public void placeCharacter(char k) {
         if (countY < 5) {
             box[countY][countX].setText(k + "");
             countY++;
         }
     }
-    
+
+    //Iterates through the arrays and determines a value for each character that
+    //has a corresponding color; returns integer array
     public int[] checkCharacters(char[] input, char[] answer) {
         int[] colors = new int[5];
         char[] tempAnswer = Arrays.copyOf(answer, 5);
@@ -136,7 +148,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         }
         return colors;
     }
-    
+
+    //Checks if the entered word is a valid word and is in the txt file
     public boolean isValidWord() {
         String inputWord = "";
         for(int i = 0; i < 5; i++) {
@@ -150,22 +163,39 @@ public class Wordle implements ActionListener, Runnable, KeyListener
             return true;
         }
     }
-    
-    /**
-     * Constructor for objects of class Worlde
-     */
+
+    //Creates a keyboard to be displayed
+    public void createKeyboard() {
+        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Font font2 = new Font("SansSerif", Font.BOLD, 15);
+        int count = 0;
+        for(int i = 0; i < 2; i++) {
+            for(int j = 0; j < 13; j++) {
+                keyboard[i][j] = new JTextField();
+                keyboard[i][j].setHorizontalAlignment(JTextField.CENTER);
+                keyboard[i][j].setEditable(false);
+                keyboard[i][j].setSize(30,30);
+                keyboard[i][j].setLocation(35 + (j*40) ,500 + (i*40));
+                keyboard[i][j].setBackground(Color.white);
+                keyboard[i][j].setFont(font2);
+                keyboard[i][j].addKeyListener(this);
+                keyboard[i][j].setText(letters.charAt(count) + "");
+                count++;
+                main.add(keyboard[i][j]);
+            }
+        }
+    }
+
+    //Creates layout for the Wordle game(frame, panels, textboxs, etc.)
     public void run()
     {
         frame = new JFrame();
-        frame.setSize(600,800);
-        frame.setLocation(100,100);
         frame.setTitle("Wordle");
         frame.setBackground(Color.white);
         frame.setResizable(false);
         main = new JPanel(new BorderLayout(20, 20));
         frame.setContentPane(main);
-        
-        //Create arraylist
+
         try {
             File file = new File("wordle-guess-words.txt");
             Scanner scan = new Scanner(file);
@@ -177,16 +207,17 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         } catch(FileNotFoundException e) {
             System.out.println("Error");
         }
-        
-        // Create content panel without a layout manager
+
+        //Fonts
         Font font = new Font("SansSerif", Font.BOLD, 30);
         Font font2 = new Font("SansSerif", Font.BOLD, 15);
+
         main = new JPanel();
         main.setLayout(null);
         main.setBackground(Color.white);
+
+        //Creates Wordle logo at the top
         wordleLogo = new JTextField();
-        wordleLogo.setSize(150, 50);
-        wordleLogo.setLocation(210,15);
         wordleLogo.setHorizontalAlignment(JTextField.CENTER);
         wordleLogo.setText("Wordle");
         wordleLogo.setFont(font);
@@ -194,7 +225,10 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         wordleLogo.setEditable(false);
         wordleLogo.addKeyListener(this);
         main.add(wordleLogo);
+
         frame.setContentPane(main);
+
+        //Creates the textboxes using a 2D array
         for(int i = 0; i < 5; i++) {
             for(int j = 0; j < 6; j++) {
                 box[i][j] = new JTextField();
@@ -208,15 +242,18 @@ public class Wordle implements ActionListener, Runnable, KeyListener
                 main.add(box[i][j]);
             }
         }
+        //Locations and Sizes
+        wordleLogo.setSize(150, 50);
+        wordleLogo.setLocation(210,15);
+        frame.setSize(600,800);
+        frame.setLocation(100,100);
+
+        createKeyboard();
         pickAnswer();
         frame.addKeyListener(this);
         frame.setVisible(true);
     }
-    
-    public void actionPerformed(ActionEvent event)
-    {
-        
-    }
+
 
     public static String pickAnswer() {
         ArrayList<String> potentialWords = new ArrayList<String>();
@@ -239,8 +276,8 @@ public class Wordle implements ActionListener, Runnable, KeyListener
         }
         return answer1;
     }
-    
+
     public static void start() {
-       SwingUtilities.invokeLater(new Wordle());
+        SwingUtilities.invokeLater(new Wordle());
     }
 }
