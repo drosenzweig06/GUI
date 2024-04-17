@@ -30,6 +30,7 @@ public class Wordle implements Runnable, KeyListener
     static char[] input = new char[5];
     static char[] answer = new char[5];
     static String answer1;
+    private DbInterface dbInterface = null;
 
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
@@ -247,7 +248,8 @@ public class Wordle implements Runnable, KeyListener
         wordleLogo.setLocation(210,15);
         frame.setSize(600,800);
         frame.setLocation(100,100);
-
+        String databaseName = "wordle";
+        dbInterface = new DbInterface(databaseName);
         createKeyboard();
         pickAnswer();
         frame.addKeyListener(this);
