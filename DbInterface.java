@@ -36,33 +36,76 @@ public class DbInterface {
         return dbConn != null;
     }
     
+    public String getWord() {
+        String word = "";
+        try {
+            Statement s = dbConn.createStatement();
+            String sql = 
+                    "SELECT current_game_word();";
+            System.out.println(sql);
+            ResultSet rs = s.executeQuery(sql);
+            while(rs.next()) {
+               word = rs.getString(1); 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return word;
+    }
+    
+    public boolean checkGuess(String guess) {
+        boolean isValid = false;
+        try {
+            Statement s = dbConn.createStatement();
+            String sql = 
+                    "Select * FROM guess_word WHERE word = '" + guess + "'";
+            System.out.println(sql);
+            ResultSet rs = s.executeQuery(sql);
+            if(rs.next()) {
+                isValid = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isValid;
+    }
+    
+    public boolean addHistory(String user, String gameWord, boolean win, int guesses) {
+        try {
+            Statement s = dbConn.createStatement();
+            String sql = 
+                    "INSERT INTO result (\"user\", date, game_word, win, guesses) " +
+                    "VALUES ('" + user + "', CURRENT_DATE , '" + 
+                    gameWord + "'," + win + "," + guesses + ");";
+            System.out.println(sql);
+            s.executeUpdate(sql);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+/*
     // Read all person records from database and return as a list.
-    public ArrayList<Person> readAllPersons() {
-        ArrayList<Person> personList = new ArrayList<Person>();
+    public ArrayList<Wordle> readAllPersons() {
+        ArrayList<Wordle> wordleList = new ArrayList<Wordle>();
         
         try {
             Statement s = dbConn.createStatement();
             String sql = 
-                    "SELECT id, last_name, first_name, age, title " +
-                    "FROM person " +
-                    "ORDER BY title, last_name, first_name;";
+                    "SELECT current_game_word();";
             System.out.println(sql);
             ResultSet rs = s.executeQuery(sql);
             while (rs.next()) {
                 System.out.println(rs.getString(1));
-                Person newPerson = new Person(
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getInt(4),
-                        rs.getString(5));
-                personList.add(newPerson);
+                Wordle newWordle = new Wordle();
+                wordleList.add(newWordle);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         
-        return personList;
+        return wordleList;
     }
 
     // Add person to database.
@@ -120,4 +163,5 @@ public class DbInterface {
             return false;
         }
     }
+    */
 }

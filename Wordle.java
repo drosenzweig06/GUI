@@ -31,6 +31,7 @@ public class Wordle implements Runnable, KeyListener
     static char[] answer = new char[5];
     static String answer1;
     private DbInterface dbInterface = null;
+    private String user = "Daniel";
 
     public void keyPressed(KeyEvent e) {
         char key = e.getKeyChar();
@@ -48,6 +49,7 @@ public class Wordle implements Runnable, KeyListener
                 colorThatBadBoy(checkCharacters(input, answer));
                 win();
                 countY = 0;
+                dbInterface.addHistory(user, answer1, win, countX);
             } else {
                 colorThatBadBoy(checkCharacters(input, answer));
                 lose();
@@ -93,6 +95,7 @@ public class Wordle implements Runnable, KeyListener
             reveal.setBackground(Color.white);
             reveal.setEditable(false);
             main.add(reveal);
+            dbInterface.addHistory(user, answer1, win, countX);
         }
     }
 
@@ -156,13 +159,8 @@ public class Wordle implements Runnable, KeyListener
         for(int i = 0; i < 5; i++) {
             inputWord += box[i][countX].getText();
         }
-        if(potentialWords.get(inputWord) != null) {
-            return true;
-        } else if(potentialWords.get(inputWord) == null) {
-            return false;
-        } else {
-            return true;
-        }
+        boolean isValid = dbInterface.checkGuess(inputWord);
+        return isValid;
     }
 
     //Creates a keyboard to be displayed
@@ -257,22 +255,8 @@ public class Wordle implements Runnable, KeyListener
     }
 
 
-    public static String pickAnswer() {
-        ArrayList<String> potentialWords = new ArrayList<String>();
-        Random rand = new Random();
-        try {
-            File words = new File("wordle-game-words.txt");
-            Scanner scan = new Scanner(words);
-            while(scan.hasNextLine()) {
-                String word = scan.nextLine();
-                potentialWords.add(word);
-            }
-            scan.close();
-        } catch(FileNotFoundException e) {
-            System.out.println("Error");
-        }
-        int i = rand.nextInt(potentialWords.size());
-        answer1 = potentialWords.get(i);
+    public String pickAnswer() {
+        answer1 = dbInterface.getWord();
         for(int j = 0; j < 5; j++) {
             answer[j] = answer1.charAt(j);
         }
