@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Scanner;
 
 /**
  * Write a description of class NGram here.
@@ -8,10 +9,9 @@ import java.io.File;
  */
 public class NGram
 {
-    // instance variables - replace the example below with your own
-    //history is the key to the hash table
-    private int x;
-
+    private String[] words;
+    private MyHashTable potentialWords = new MyHashTable();
+    private int murphcon = 8;
     /**
      * An example of a method - replace this comment with your own
      *
@@ -22,11 +22,29 @@ public class NGram
     {
         try{
             File test = new File("Ngrams.txt");
-            StringBuilder string = new StringBuilder(100);
-            string.append(string);
+            Scanner scan = new Scanner(test);
+            StringBuilder string = new StringBuilder(1000);
+            while(scan.hasNextLine()) {
+                string.append(scan.nextLine() + " ");
+            }
+            scan.close();
+            words = string.toString().split("\s+");
+            buildWords();
         }
         catch(Exception e) {
             System.out.println("Cannot find file");
         }
+    }
+    
+    public void buildWords() {
+            for(int j = 0; j < words.length; j++) { 
+                String history = "";
+                for(int i = j; i < j + murphcon; i++) {
+                    history += words[i] + " ";
+                    String value = words[i+1];
+                    //System.out.println(history + "    " + value);
+                    potentialWords.put(history, value);
+                }
+            }
     }
 }
