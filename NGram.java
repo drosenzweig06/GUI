@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.Scanner;
+import java.util.*;
 
 /**
  * Write a description of class NGram here.
@@ -10,7 +11,7 @@ import java.util.Scanner;
 public class NGram
 {
     private String[] words;
-    private MyHashTable potentialWords = new MyHashTable();
+    private MyHashTable<String, ArrayList<String>> potentialWords = new MyHashTable<String, ArrayList<String>>();
     private int murphcon = 8;
     /**
      * An example of a method - replace this comment with your own
@@ -18,7 +19,7 @@ public class NGram
      * @param  y  a sample parameter for a method
      * @return    the sum of x and y
      */
-    public void readText()
+    public static void readText()
     {
         try{
             File test = new File("Ngrams.txt");
@@ -29,22 +30,37 @@ public class NGram
             }
             scan.close();
             words = string.toString().split("\s+");
-            buildWords();
+            System.out.println(Arrays.toString(words));
         }
         catch(Exception e) {
             System.out.println("Cannot find file");
         }
+        
     }
     
-    public void buildWords() {
+    public static void buildWords(String start) {
             for(int j = 0; j < words.length; j++) { 
-                String history = "";
+                String history = start;
                 for(int i = j; i < j + murphcon; i++) {
-                    history += words[i] + " ";
-                    String value = words[i+1];
-                    //System.out.println(history + "    " + value);
-                    potentialWords.put(history, value);
+                    if(i < words.length - 1) {
+                        history += words[i] + " ";
+                        if(potentialWords.get(history) == null) {
+                            ArrayList<String> values = new ArrayList<String>();
+                            String value = words[i+1];
+                            values.add(value);
+                            potentialWords.put(history, values);
+                        } else {
+                            ArrayList<String> values = potentialWords.get(history);
+                            String value = words[i+1];
+                            values.add(value);
+                            potentialWords.put(history, values);
+                        }
+                    }
                 }
             }
+    }
+    
+    public static void run() {
+        
     }
 }
